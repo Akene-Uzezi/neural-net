@@ -47,3 +47,17 @@ func (l *Layer) Forward(in []float64) []float64 {
 	l.lastOut = out
 	return out
 }
+
+func (l *Layer) Backward(gradOut []float64, lr float64) []float64 {
+	gradIn := make([]float64, len(l.lastIn))
+
+	for i := range l.Weights {
+		delta := gradOut[i] * l.lastOut[i] * (1 - l.lastOut[i])
+		for j := range l.lastIn {
+			gradIn[j] += delta * l.Weights[i][j]
+			l.Weights[i][j] -= lr * delta
+		}
+		l.Biases[i] -= lr * delta
+	}
+	return gradIn
+}
