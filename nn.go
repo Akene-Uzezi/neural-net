@@ -31,3 +31,19 @@ func NewLayer(nIn, nOut int) *Layer {
 		Weights: w, Biases: make([]float64, nOut),
 	}
 }
+
+func (l *Layer) Forward(in []float64) []float64 {
+	l.lastIn = in
+	out := make([]float64, len(l.Weights))
+
+	for i := range l.Weights {
+		sum := l.Biases[i]
+		for j := range in {
+			sum += l.Weights[i][j] * in[j]
+		}
+		out[i] = sigmoid(sum)
+	}
+
+	l.lastOut = out
+	return out
+}
