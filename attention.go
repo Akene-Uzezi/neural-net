@@ -30,3 +30,22 @@ func softmax(xs []float64) []float64 {
 
 	return res
 }
+
+func selfAttention(q []float64, keys, values [][]float64) []float64 {
+	dK := float64(len(q))
+	scores := make([]float64, len(keys))
+
+	for i, k := range keys {
+		scores[i] = dotProduct(q, k) / math.Sqrt(dK)
+	}
+
+	weights := softmax(scores)
+	valDim := len(values[0])
+	out := make([]float64, valDim)
+	for i, w := range weights {
+		for j := range valDim {
+			out[j] += w * values[i][j]
+		}
+	}
+	return out
+}
